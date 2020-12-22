@@ -1,0 +1,503 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Amount_of_Diced-beef": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Diced-beef (in g)",
+                            "type": "float",
+                            "value": "@mul(100, variables('Multiplier'))"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Eggs": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Eggs",
+                            "type": "float",
+                            "value": "@mul(2, variables('Multiplier'))"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Garae-tteok": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Garae-tteok (in g)",
+                            "type": "float",
+                            "value": "@mul(400, variables('Multiplier'))"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Minced_Garlic": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Minced Garlic (in tablespoons)",
+                            "type": "float",
+                            "value": "@variables('Multiplier')"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Olive_Oil": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Olive oil (in tablespoons)",
+                            "type": "float",
+                            "value": "@variables('Multiplier')"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Sesame_Oil": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Sesame oil (in tablespoons)",
+                            "type": "float",
+                            "value": "@variables('Multiplier')"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Soy_Sauce": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Soy sauce (in tablespoons)",
+                            "type": "float",
+                            "value": "@mul(2, variables('Multiplier'))"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Spring_Onions": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Spring onions",
+                            "type": "float",
+                            "value": "@variables('Multiplier')"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Amount_of_Water": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Water (in cups)",
+                            "type": "float",
+                            "value": "@mul(10, variables('Multiplier'))"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Multiplier_for_Ingredients": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Approve_that_beef_is_brown": {
+                "inputs": {
+                    "body": {
+                        "Message": {
+                            "Body": "Please confirm when the diced beef surface goes brown. We will then send you the next step",
+                            "HideHTMLMessage": false,
+                            "Importance": "Normal",
+                            "Options": "Approve",
+                            "ShowHTMLConfirmationDialog": false,
+                            "Subject": "Step 2 of your tteok-guk recipe",
+                            "To": "<PUT_YOUR_EMAIL_HERE>"
+                        },
+                        "NotificationUrl": "@{listCallbackUrl()}"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "path": "/approvalmail/$subscriptions"
+                },
+                "runAfter": {
+                    "Delay_until_beef_is_brown": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnectionWebhook"
+            },
+            "Delay_to_make_sure_recipe_is_sent_first": {
+                "inputs": {
+                    "until": {
+                        "timestamp": "@addSeconds(utcNow(), 5)"
+                    }
+                },
+                "runAfter": {
+                    "Email_with_Recipe": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Wait"
+            },
+            "Delay_until_beef_is_brown": {
+                "inputs": {
+                    "until": {
+                        "timestamp": "@addSeconds(utcNow(), 24)"
+                    }
+                },
+                "runAfter": {
+                    "Instruction:_stir-fry_diced_beef_": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Wait"
+            },
+            "Delay_until_soup_is_cooked": {
+                "inputs": {
+                    "until": {
+                        "timestamp": "@addSeconds(utcNow(), 90)"
+                    }
+                },
+                "runAfter": {
+                    "Instruction:_Boil_the_soup_and_beat_the_eggs": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Wait"
+            },
+            "Email_with_Recipe": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p>Hi,<br>\n<br>\nhere we go with the recipe for your Tteok-guk for @{triggerBody()?['noOfGuests']} guests:<br>\n<br>\n* Garae-tteok: @{variables('Garae-tteok (in g)')}g<br>\n* Diced beef: @{variables('Diced-beef (in g)')}g<br>\n* Water: @{variables('Water (in cups)')} cups<br>\n* Eggs: @{variables('Eggs')}<br>\n* Spring onion: @{variables('Spring onions')}<br>\n* Minced garlic: @{variables('Minced Garlic (in tablespoons)')} tablespoon<br>\n* Soy sauce: @{variables('Soy sauce (in tablespoons)')} tablespoon<br>\n* Sesame oil: @{variables('Sesame oil (in tablespoons)')} tablespoon<br>\n* Olive oil: @{variables('Olive oil (in tablespoons)')} tablespoon<br>\n* Salt and pepper<br>\n<br>\nNext you will receive the cooking procedure - stay tuned<br>\n<br>\nBest regards,<br>\n<br>\nYour Chief</p>",
+                        "Subject": "Your Recipe for Tteok-guk for The New Year",
+                        "To": "<PUT_YOUR_EMAIL_HERE>"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Amount_of_Diced-beef": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Eggs": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Garae-tteok": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Minced_Garlic": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Olive_Oil": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Sesame_Oil": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Soy_Sauce": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Spring_Onions": [
+                        "Succeeded"
+                    ],
+                    "Amount_of_Water": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Finalize_the_soup": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p>We are nearly there:<br>\n* Put the minced garlic and soy sauce into the boiled soup. Add some salt, if necessary.<br>\n* Add the beaten egg and sliced spring onion.<br>\n* Serve the soup with pepper drizzled on top.<br>\n<br>\n잘 먹겠습니다</p>",
+                        "Subject": "Step 4 and final step of your tteok-guk recipe",
+                        "To": "<PUT_YOUR_EMAIL_HERE>"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Delay_until_soup_is_cooked": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Initialize_Sliced": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "sliced",
+                            "type": "string",
+                            "value": "@triggerBody()?['garaeTteokType']"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "InitializeVariable"
+            },
+            "Initialize_number_of_guests": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "noOfGuests",
+                            "type": "integer",
+                            "value": "@triggerBody()?['noOfGuests']"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_Sliced": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Instruction:_Boil_the_soup_and_beat_the_eggs": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p>Put the water into the wok and boil for about 30 mins with medium heat.<br>\n<br>\nWhile the water is boiling:<br>\n* Remove bubbles from the water from time to time<br>\n* Get the eggs beaten.<br>\n<br>\nWe will update you in 30 minutes with the next step</p>",
+                        "Subject": "Step 3 of your tteok-guk recipe",
+                        "To": "<PUT_YOUR_EMAIL_HERE>"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Approve_that_beef_is_brown": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Instruction:_stir-fry_diced_beef_": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p>Next stir-fry the diced beef at high heat, with sesame oil and olive oil until the beef surface goes brown.<br>\n<br>\nThis should take 8 minutes. We remind you when they are over.</p>",
+                        "Subject": "Step 2 of your tteok-guk recipe",
+                        "To": "<PUT_YOUR_EMAIL_HERE>"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Sliced_or_not_sliced_-_that's_the_question": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Multiplier_for_Ingredients": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Multiplier",
+                            "type": "float",
+                            "value": "@div(variables('noOfGuests'), 4.0)"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_number_of_guests": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Sliced_or_not_sliced_-_that's_the_question": {
+                "actions": {
+                    "Delay_until__tteok-guk_is_watered": {
+                        "inputs": {
+                            "until": {
+                                "timestamp": "@addSeconds(utcNow(), 90)"
+                            }
+                        },
+                        "runAfter": {
+                            "Instruction:_water_tteok-guk": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "Wait"
+                    },
+                    "Instruction:_water_tteok-guk": {
+                        "inputs": {
+                            "body": {
+                                "Body": "<p>As you have bought &nbsp;sliced garae-tteok, water it for 30 minutes<strong><br>\n<br>\n</strong>In the meantime: slice the spring onions<em><strong><br>\n<br>\n</strong></em>We will update you in 30 minutes with the next step</p>",
+                                "Subject": "Step 1 of your tteok-guk recipe",
+                                "To": "<PUT_YOUR_EMAIL_HERE>"
+                            },
+                            "host": {
+                                "connection": {
+                                    "name": "@parameters('$connections')['office365']['connectionId']"
+                                }
+                            },
+                            "method": "post",
+                            "path": "/v2/Mail"
+                        },
+                        "runAfter": {},
+                        "type": "ApiConnection"
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "Instruction:_slice__tteok-guk": {
+                            "inputs": {
+                                "body": {
+                                    "Message": {
+                                        "Body": "* Slice the garae-tteok into small pieces – no thicker than 5 mm\n* Slice the spring onions\nPlease confirm when you are finished",
+                                        "HideHTMLMessage": false,
+                                        "Importance": "Normal",
+                                        "Options": "Approve",
+                                        "ShowHTMLConfirmationDialog": true,
+                                        "Subject": "Step 1 of your tteok-guk recipe",
+                                        "To": "<PUT_YOUR_EMAIL_HERE>"
+                                    },
+                                    "NotificationUrl": "@{listCallbackUrl()}"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['office365']['connectionId']"
+                                    }
+                                },
+                                "path": "/approvalmail/$subscriptions"
+                            },
+                            "runAfter": {},
+                            "type": "ApiConnectionWebhook"
+                        }
+                    }
+                },
+                "expression": {
+                    "and": [
+                        {
+                            "equals": [
+                                "@variables('sliced')",
+                                "sliced"
+                            ]
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Delay_to_make_sure_recipe_is_sent_first": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "If"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "schema": {
+                        "properties": {
+                            "garaeTteokType": {
+                                "type": "string"
+                            },
+                            "noOfGuests": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "office365": {
+                    "connectionId": "/subscriptions/<YOUR_SUBSCRIPTION_ID>/resourceGroups/<YOUR_RESOURCE_GROUP>/providers/Microsoft.Web/connections/office365",
+                    "connectionName": "office365",
+                    "id": "/subscriptions/<YOUR_SUBSCRIPTION_ID>/providers/Microsoft.Web/locations/westeurope/managedApis/office365"
+                }
+            }
+        }
+    }
+}
